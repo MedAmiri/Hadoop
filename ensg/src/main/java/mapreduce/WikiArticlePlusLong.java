@@ -82,7 +82,7 @@ package mapreduce;
 			conf.set(XmlInputFormat.END_TAG_KEY, "</page>");
 
 			Job job = Job
-					.getInstance(conf, "WikiFirstTitleLetterDocumentLengthSum");
+					.getInstance(conf, "hatim-mohammed");
 			job.setJarByClass(WikiFirstTitleLetterDocumentLengthSum.class);
 
 			// Input / Mapper
