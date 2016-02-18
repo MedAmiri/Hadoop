@@ -36,7 +36,7 @@ package mapreduce;
 				String document = getDocument(articleXML);
 
 				if (title.length() > 0) {
-					context.write(new Text(title.substring(0, 1)), new IntWritable(
+					context.write(new Text(title/*.substring(0, 1)*/), new IntWritable(
 							document.length()));
 				}
 
@@ -63,7 +63,9 @@ package mapreduce;
 
 				long totalLength = 0;
 				for (IntWritable documentLength : values) {
-					totalLength += documentLength.get();
+					if(totalLength < documentLength.get()){
+					totalLength = documentLength.get();
+					}
 				}
 				context.write(key, new LongWritable(totalLength));
 			}
