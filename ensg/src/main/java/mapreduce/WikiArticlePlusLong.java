@@ -64,7 +64,7 @@ package mapreduce;
 				long maxLength = 0;
 				Text titreActicleMax = new Text("");
 				for (Text document : values) {
-					String[] chaine = document.toString().split("|||");
+					String[] chaine = document.toString().split("\\|\\|\\|");
 					int maxtest = Integer.parseInt(chaine[1]);
 					if(maxLength < maxtest){
 						maxLength = maxtest;
