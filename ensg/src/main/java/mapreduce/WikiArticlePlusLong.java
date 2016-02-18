@@ -20,7 +20,7 @@ package mapreduce;
 	public class WikiArticlePlusLong {
 
 		public static class FirstTitleLetterMapper extends
-				Mapper<Object, Text, Text, IntWritable> {
+				Mapper<Object, Text, Text, Text> {
 
 			private static final String START_DOC = "<text xml:space=\"preserve\">";
 			private static final String END_DOC = "</text>";
@@ -36,8 +36,8 @@ package mapreduce;
 				String document = getDocument(articleXML);
 
 				if (title.length() > 0) {
-					context.write(new Text(title/*.substring(0, 1)*/), new IntWritable(
-							document.length()));
+					context.write(new Text(""), new Text (title +new IntWritable(
+							document.length())));
 				}
 
 			}
@@ -86,7 +86,7 @@ package mapreduce;
 			job.setInputFormatClass(XmlInputFormat.class);
 			job.setMapperClass(FirstTitleLetterMapper.class);
 			job.setMapOutputKeyClass(Text.class);
-			job.setMapOutputValueClass(IntWritable.class);
+			job.setMapOutputValueClass(Text.class);
 
 			// Output / Reducer
 			FileOutputFormat.setOutputPath(job, new Path(args[1]));
