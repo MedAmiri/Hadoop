@@ -62,14 +62,16 @@ package mapreduce;
 					Context context) throws IOException, InterruptedException {
 
 				long maxLength = 0;
+				Text titreActicleMax = new Text("");
 				for (Text document : values) {
 					String[] chaine = document.toString().split("|||");
 					int maxtest = Integer.parseInt(chaine[1]);
 					if(maxLength < maxtest){
 						maxLength = maxtest;
+						titreActicleMax.set(chaine[0]);
 					}
 				}
-				context.write(key, new LongWritable(maxLength));
+				context.write(titreActicleMax , new LongWritable(maxLength));
 			}
 		}
 
