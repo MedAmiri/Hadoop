@@ -43,7 +43,6 @@ public class WikiArticleHadoop {
 				context.write(new Text(""), new Text (title +"|||"+
 						document.length()));
 			}
-		
 		}
 		
 	private static String getDocument(String xml) {
