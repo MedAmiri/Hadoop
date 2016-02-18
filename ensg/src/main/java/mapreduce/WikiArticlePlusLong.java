@@ -36,8 +36,8 @@ package mapreduce;
 				String document = getDocument(articleXML);
 
 				if (title.length() > 0) {
-					context.write(new Text(""), new Text (title +new IntWritable(
-							document.length())));
+					context.write(new Text(""), new Text (title +"|||"+
+							document.length()));
 				}
 
 			}
