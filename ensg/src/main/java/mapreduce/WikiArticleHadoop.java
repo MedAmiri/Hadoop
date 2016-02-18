@@ -35,7 +35,6 @@ public class WikiArticleHadoop {
 				throws IOException, InterruptedException {
 		
 			String articleXML = value.toString();
-		
 			String title = getTitle(articleXML);
 			String document = getDocument(articleXML);
 		
@@ -85,7 +84,7 @@ public class WikiArticleHadoop {
 		conf.set(XmlInputFormat.END_TAG_KEY, "</page>");
 		
 		Job job = Job
-				.getInstance(conf, "hatim-med");
+				.getInstance(conf, "hatim-mohammed");
 		job.setJarByClass(WikiFirstTitleLetterDocumentLengthSum.class);
 		
 		// Input / Mapper
