@@ -58,16 +58,18 @@ package mapreduce;
 		public static class DocumentLengthSumReducer extends
 				Reducer<Text, IntWritable, Text, LongWritable> {
 
-			public void reduce(Text key, Iterable<IntWritable> values,
+			public void reduce(Text key, Iterable<Text> values,
 					Context context) throws IOException, InterruptedException {
 
-				long totalLength = 0;
-				for (IntWritable documentLength : values) {
-					if(totalLength < documentLength.get()){
-					totalLength = documentLength.get();
+				long maxLength = 0;
+				for (Text document : values) {
+					String[] chaine = document.toString().split("|||");
+					int maxtest = Integer.parseInt(chaine[1]);
+					if(maxLength < maxtest){
+						maxLength = maxtest;
 					}
 				}
-				context.write(key, new LongWritable(totalLength));
+				context.write(key, new LongWritable(maxLength));
 			}
 		}
 
