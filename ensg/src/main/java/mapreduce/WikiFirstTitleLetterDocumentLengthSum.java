@@ -36,7 +36,7 @@ public class WikiFirstTitleLetterDocumentLengthSum {
 			String document = getDocument(articleXML);
 
 			if (title.length() > 0) {
-				context.write(new Text(title/*.substring(0, 1)*/), new IntWritable(
+				context.write(new Text(title.substring(0, 1)), new IntWritable(
 						document.length()));
 			}
 
@@ -63,10 +63,7 @@ public class WikiFirstTitleLetterDocumentLengthSum {
 
 			long totalLength = 0;
 			for (IntWritable documentLength : values) {
-				if (totalLength < documentLength.get()){
-					totalLength = documentLength.get();	
-				}
-				//totalLength += documentLength.get();
+				totalLength += documentLength.get();
 			}
 			context.write(key, new LongWritable(totalLength));
 		}
