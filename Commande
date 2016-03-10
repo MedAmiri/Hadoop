@@ -1,0 +1,960 @@
+  238  scp prof@lnv1509w034:~/workspace/ensg/target/pensier_ait-omar-1.0.0.jar .
+  239  ls
+  240  cd bin/
+  241  ls
+  242  cd ..
+  243  cd bin/hadoop
+  244  ls
+  245  cd bin/
+  246  ls
+  247  cd ..
+  248  ls
+  249  ./bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  250  cd ~
+  251  ls
+  252  cd /usr/local/hadoop
+  253  ls
+  254  mv pensier_ait-omar-1.0.0.jar ~/
+  255  ls
+  256  cd ~
+  257  ls
+  258  cd /usr/local/hadoop
+  259  ls
+  260  ./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-pensier
+  261  exit
+  262  ls
+  263  ./bin/hadoop jar /home/hduser/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-am
+  264  ./bin/hadoop job -kill public static class FirstTitleLetterMapper extends
+  265  Mapper<Object, Text, Text, Text> {
+  266  private static final String START_DOC = "<text xml:space=\"preserve\">";
+  267  private static final String END_DOC = "</text>";
+  268  private static final Pattern TITLE = Pattern
+  269  .compile("<title>(.*)<\\/title>");
+  270  public void map(Object key, Text value, Context context)
+  271  throws IOException, InterruptedException {
+  272  String articleXML = value.toString();
+  273  String title = getTitle(articleXML);
+  274  String document = getDocument(articleXML);
+  275  if (title.length() > 0) {
+  276  context.write(new Text(""), new Text (title +"|||"+
+  277  document.length()));
+  278  }
+  279  private static String getDocument(String xml) {
+  280  int start = xml.indexOf(START_DOC) + START_DOC.length();
+  281  int end = xml.indexOf(END_DOC, start);
+  282  return start < end ? xml.substring(start, end) : "";
+  283  }
+  284  private static String getTitle(CharSequence xml) {
+  285  Matcher m = TITLE.matcher(xml);
+  286  return m.find() ? m.group(1) : "";
+  287  }
+  288  public static class DocumentLengthSumReducer extends
+  289  Reducer<Text, IntWritable, Text, LongWritable> {
+  290  public void reduce(Text key, Iterable<Text> values,
+  291  Context context) throws IOException, InterruptedException {
+  292  long maxLength = 0;
+  293  Text titreActicleMax = new Text("");
+  294  for (Text document : values) {
+  295  String[] chaine = document.toString().split("\\|\\|\\|");
+  296  int maxtest = Integer.parseInt(chaine[1]);
+  297  if(maxLength < maxtest){
+  298  maxLength = maxtest;
+  299  titreActicleMax.set(chaine[0]);
+  300  }
+  301  context.write(titreActicleMax , new LongWritable(maxLength));
+  302  }
+  303  public static void main(String[] args) throws Exception {
+  304  Configuration conf = new Configuration();
+  305  conf.set(XmlInputFormat.START_TAG_KEY, "<page>");
+  306  conf.set(XmlInputFormat.END_TAG_KEY, "</page>");
+  307  Job job = Job
+  308  .getInstance(conf, "WikiFirstTitleLetterDocumentLengthSum");
+  309  job.setJarByClass(WikiFirstTitleLetterDocumentLengthSum.class);
+  310  // Input / Mapper
+  311  FileInputFormat.addInputPath(job, new Path(args[0]));
+  312  job.setInputFormatClass(XmlInputFormat.class);
+  313  job.setMapperClass(FirstTitleLetterMapper.class);
+  314  job.setMapOutputKeyClass(Text.class);
+  315  job.setMapOutputValueClass(Text.class);
+  316  // Output / Reducer
+  317  FileOutputFormat.setOutputPath(job, new Path(args[1]));
+  318  job.setOutputFormatClass(TextOutputFormat.class);
+  319  job.setOutputKeyClass(Text.class);
+  320  job.setOutputValueClass(LongWritable.class);
+  321  job.setReducerClass(DocumentLengthSumReducer.class);
+  322  job.setNumReduceTasks(12);
+  323  System.exit(job.waitForCompletion(true) ? 0 : 1);
+  324  if(maxLength < maxtest){
+  325  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-romain-alban
+  326  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-am
+  327  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar reduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-am
+  328  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-am
+  329  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amiri
+  330  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amir
+  331  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amirri
+  332  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amiriJOB1
+  333  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amiriJOB
+  334  ./bin/hadoop jar ~/Hatim-Med-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /wiki-hatim-amiriJOBtt
+  335  cd /usr/local/hadoop
+  336  ls
+  337  #./bin/hadoop jar ~/ensg-1.0.0.jar 
+  338  #./bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  339  hadoop fs -ls /test-wiki2
+  340  hadoop fs -cat /test-wiki2/part-r-00000
+  341  history
+  342  ls
+  343  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target
+  344  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target/ensg_zak_phil-1.0.0.jar . 
+  345  ls
+  346  #./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  347  ./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  348  cd sbin/
+  349  ls
+  350  cd ..
+  351  ls
+  352  mv ensg_zak_phil-1.0.0.jar /bin
+  353  sudo mv ensg_zak_phil-1.0.0.jar /bin
+  354  ./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  355  cd bin/
+  356  ls
+  357  sudo mv /bin/ensg_zak_phil-1.0.0.jar  bin
+  358  ls
+  359  cd bin
+  360  ls
+  361  cd ..
+  362  ls
+  363  ./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  364  cd ..
+  365  ./bin/hadoop jar ~/pensier_ait-omar-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  366  ls
+  367  cd hadoop/
+  368  ls
+  369  cd ..
+  370  lqs
+  371  ls
+  372  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target/ensg_zak_phil-1.0.0.jar ~/
+  373  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia
+  374  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-ait-omar_pensier
+  375  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target/ensg_zak_phil-1.0.0.jar ~/
+  376  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-ait-omar_pensier
+  377  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier
+  378  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target/ensg_zak_phil-1.0.0.jar ~/
+  379  prof2014ensg
+  380  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.Article /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_res
+  381  sudo scp prof@lnv1509w033:/home/prof/workspace/ensg_zak_phil/target/ensg_zak_phil-1.0.0.jar ~/
+  382  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.Article /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_res
+  383  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.Article /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_article
+  384  hadoop job -set-priority job_1455809903919_0004 HIGH
+  385  cd /usr/local/hadoop
+  386  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.Article /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_res
+  387  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.NumberHadoop /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_hadoop
+  388  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.NumberHadoop /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_nub_hadoop
+  389  ./bin/hadoop jar ~/ensg_zak_phil-1.0.0.jar mapreduce.NumberHadoop /wikipedia/enwiki-20160113-pages-articles.xml /article_pensier_nub
+  390  vim /usr/local/hadoop/etc/hadoop/slaves 
+  391  cd /usr/local/hadoop
+  392  ./bin/hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /wiki-av1
+  393  hadoop fs -ls /wiki-av1
+  394  hadoop fs -cat /wiki-av1/part-r-00000
+  395  ./bin/hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /wiki-av2
+  396  hadoop fs -cat /wiki-av2/part-r-00000
+  397  sudo vi etc/hadoop/slaves 
+  398  ./sbin/stop-all.sh 
+  399  ./sbin/start-all.sh 
+  400  jps
+  401  ./bin/hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /wiki-av3
+  402  ./bin/hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /wiki-av3_1
+  403  ./bin/hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /wiki-av3_2
+  404  cd /usr/local/hadoop
+  405  ls -l
+  406  cd bin/
+  407  hadoop fs -ls /
+  408  hadoop fs -ls /wikipedia
+  409  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia2
+  410  cd ..
+  411  bin/hadoop job -kill job_1455788431555_0002
+  412  bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia3
+  413  bin/hadoop fs -ls /
+  414  bin/hadoop fs -ls /test-wiki2
+  415  bin/hadoop fs -cat /test-wiki2/part-r-00005
+  416  bin/hadoop fs -tac /test-wiki2/part-r-00005
+  417  bin/hadoop fs -head /test-wiki2/part-r-00005
+  418  bin/hadoop fs
+  419  bin/hadoop fs -cat /test-wiki2/part-r-00005 > out.txt
+  420  nano out.txt 
+  421  bin/hadoop job
+  422  bin/hadoop job -list all
+  423  bin/hadoop job -kill job_1455788431555_0005
+  424  bin/hadoop job -kill job_1455788431555_0006
+  425  bin/hdfs balancer &
+  426  ls /bin
+  427  ls -l sbin
+  428  sbin/start-balancer.sh &
+  429  bin/hadoop job -kill job_1455808014864_0002
+  430  cd /usr/local/hadoop
+  431  ./sbin/start-dfs.sh 
+  432  ./sbin/start-yarn.sh 
+  433  jps
+  434  ./sbin/stop-yarn.sh 
+  435  ./sbin/stop-dfs.sh 
+  436  ./sbin/start-all.sh 
+  437  jps
+  438  ./bin/hadoop job -kill application_1455808014864_0002
+  439  ./bin/hadoop -job kill application_1455808014864_0002
+  440  ./bin/hadoop job -kill application_1455808014864_0002
+  441  bin/hadoop job -kill application_1455808014864_0002
+  442  bin/hadoop job -stop application_1455808014864_0002
+  443  bin/hadoop job -status application_1455808014864_0002
+  444  jps
+  445  bin/hadoop job -list
+  446  bin/hadoop job -kill job_1455808014864_0002
+  447  bin/hadoop job -kill job_1455808014864_0006
+  448  bin/hadoop job -kill job_1455808014864_0002
+  449  bin/hadoop job -kill job_1455808014864_0003
+  450  jps
+  451  bin/hadoop job -kill job_1455808014864_0003
+  452  ./sbin/stop-all.sh 
+  453  ./sbin/start-all.sh 
+  454  cat /etc/hosts
+  455  ./sbin/stop-all.sh 
+  456  ./sbin/start-all.sh 
+  457  jps
+  458  ./sbin/stop-all.sh 
+  459  cd /usr/local/hadoop
+  460  ./sbin/start-all.sh 
+  461  cat /etc/hosts
+  462  sudo vi  /etc/hosts
+  463  ./sbin/stop-all.sh 
+  464  ./sbin/start-all.sh 
+  465  cd /usr/local/hadoop
+  466  ./sbin/start-all.sh 
+  467  ./sbin/stop-all.sh 
+  468  cat /etc/hosts
+  469  sudo vim /etc/apt/sources.list.d/oracle-java.list
+  470  java -version
+  471  cat etc/hadoop/hadoop-env.sh 
+  472  cat /etc/hosts
+  473  sudo vi ~/.bashrc 
+  474  cd /usr/local/hadoop/etc/hadoop/
+  475  ld
+  476  ls
+  477  cd ../..
+  478  ./sbin/start-dfs.sh 
+  479  ./sbin/start-yarn.sh 
+  480  jps
+  481  ./bin/hdfs dfs -ls /
+  482  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  483  https://webmail.ensg.eu/src/signout.phpexit
+  484  exit
+  485  cd /usr/local/hadoop
+  486  ./sbin/stop-all.sh 
+  487  xit
+  488  exit
+  489  jps
+  490  cd /usr/local/hadoop
+  491  suco vi /etc/hosts
+  492  sudo vi /etc/hosts
+  493  sbin/start-all.sh 
+  494  sbin/stop-all.sh 
+  495  sbin/start-all.sh 
+  496  jps
+  497  bin/hdfs dfs -ls /
+  498  cd etc/hadoop/
+  499  sudo vi core-site.xml 
+  500  sudo vi hdfs-site.xml 
+  501  sudo vi yarn-site.xml 
+  502  sudo vi masters 
+  503  sudo vi slaves 
+  504  sbin/stop-all.sh 
+  505  cd ../..
+  506  sbin/stop-all.sh 
+  507  sudo rm -rf /usr/local/hadoop_tmp/
+  508  sudo mkdir -p /usr/local/hadoop_tmp/
+  509  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  510  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  511  bin/hdfs namenode -format
+  512  sudo vi etc/hadoop/hdfs-site.xml 
+  513  bin/hdfs namenode -format
+  514  sbin/start-dfs.sh 
+  515  sbin/start-yarn.sh 
+  516  bin/hdfs dfs -ls /
+  517  sudo vi etc/hadoop/hdfs-site.xml 
+  518  sudo vi ~/.bashrc 
+  519  ls
+  520  ls lib
+  521  ls lib/native/
+  522  sudo vi ~/.bashrc 
+  523  bin/hdfs dfs -ls /
+  524  sbin/stop-all.sh 
+  525  sbin/start-all.sh 
+  526  sbin/stop-all.sh 
+  527  sudo rm -rf /usr/local/hadoop_tmp/
+  528  sudo mkdir -p /usr/local/hadoop_tmp/
+  529  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  530  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  531  bin/hdfs namenode -format
+  532  sbin/start-all.sh 
+  533  sbin/stop-all.sh 
+  534  sudo vi ~/.bashrc 
+  535  sbin/start-all.sh 
+  536  cd lib
+  537  ls
+  538  cd native/
+  539  ls
+  540  rm libhadoop.so.1.0.0 
+  541  cp /home/prof/Téléchargements/hadoop-2.6.0/lib/native/libhadoop.so.1.0.0 .
+  542  ls
+  543  sbin/stop-all.sh 
+  544  cd ../..
+  545  sbin/stop-all.sh 
+  546  cd lib/native/
+  547  ls
+  548  rm libhdfs.so.0.0.0 
+  549  cp /home/prof/Téléchargements/hadoop-2.6.0/lib/native/libhdfs.so.0.0.0 .
+  550  ls
+  551  cd ../..
+  552  sbin/start-all.sh 
+  553  bin/hdfs dfs -ls /
+  554  cd bin/
+  555  ls
+  556  cp /home/prof/Téléchargements/hadoop-2.6.0/bin/hdfs .
+  557  cp /home/prof/Téléchargements/hadoop-2.6.0/bin/hadoop .
+  558  sbin/stop-all.sh 
+  559  cd ..
+  560  sbin/stop-all.sh 
+  561  cd lib
+  562  cd native/
+  563  ls
+  564  cp ./* ../
+  565  ls
+  566  cd ..
+  567  ls
+  568  sudo vi ~/.bashrc 
+  569  cd ..
+  570  sbin/start-all.sh 
+  571  bin/hdfs dfs -ls /
+  572  bin/hdfs dfs -ls 
+  573  ./bin/hdfs dfs -put /home/prof/Documents/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  574  bin/hdfs dfs -mkdir /wikipedia
+  575  bin/hdfs dfs -ls 
+  576  bin/hdfs dfs -ls /
+  577  ./bin/hdfs dfs -put /home/prof/Documents/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  578  ./bin/hdfs dfs -put /home/prof/Documents/hadoop/enwiki-20160113-pages-articles.xml /wikipedia/enwiki-20160113-pages-articles.xml
+  579  ./bin/hdfs dfs -put /home/prof/Documents/Hadoop/enwiki-20160113-pages-articles.xml /wikipedia/enwiki-20160113-pages-articles.xml
+  580  jps
+  581  sbin/stop-all.sh 
+  582  sudo vi ~/.bashrc c
+  583  sudo vi ~/.bashrc
+  584  sbin/start-all.sh 
+  585  jps
+  586  cd lib
+  587  ls
+  588  rm libh*
+  589  ls
+  590  cd native/
+  591  ls
+  592  cd ../..
+  593  sudo vi ~/.bashrc 
+  594  jps
+  595  sbin/stop-all.sh 
+  596  jps
+  597  sbin/start-all.sh 
+  598  jps
+  599  bin/hdfs dfs -ls /
+  600  bin/hdfs namenode -format
+  601  jps
+  602  sbin/stop-all.sh 
+  603  bin/hdfs namenode -format
+  604  sbin/start-all.sh 
+  605  bin/hdfs dfs -ls /
+  606  jps
+  607  sbin/stop-all.sh 
+  608  jps
+  609  ls lib/native/
+  610  ls lib
+  611  ls lib/native/
+  612  ls -l lib/native/
+  613  sbin/start-all.sh 
+  614  sudo vi ~/.bashrc 
+  615  sbin/stop-all.sh 
+  616  cd lib
+  617  cp ./native/* .
+  618  lq
+  619  ls
+  620  cd ..
+  621  bin/hdfs namenode -format
+  622  sbin/start-all.sh 
+  623  jps
+  624  sbin/stop-all.sh 
+  625  bin/hdfs namenode -format
+  626  sbin/start-all.sh 
+  627  sbin/stop-all.sh 
+  628  bin/hdfs namenode -format
+  629  sbin/start-all.sh 
+  630  jps
+  631  sbin/stop-all.sh 
+  632  cd lib
+  633  ls
+  634  rm libh*
+  635  ls
+  636  ls native/
+  637  sudo vi ~/.bashrc 
+  638  cd ..
+  639  sudo rm -rf /usr/local/hadoop_tmp/
+  640  sudo mkdir -p /usr/local/hadoop_tmp/
+  641  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  642  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  643  bin/hdfs namenode -format
+  644  sbin/start-dfs.sh 
+  645  jps
+  646  sbin/start-yarn.sh 
+  647  jps
+  648  sbin/stop-all.sh 
+  649  bin/hdfs namenode -format
+  650  sbin/start-dfs.sh 
+  651  sbin/start-yarn.sh 
+  652  sbin/stop-all.sh 
+  653  bin/hdfs namenode -format
+  654  sbin/start-yarn.sh 
+  655  sbin/start-dfs.sh 
+  656  sbin/stop-all.sh 
+  657  sudo rm -rf /usr/local/hadoop_tmp/
+  658  sudo mkdir -p /usr/local/hadoop_tmp/
+  659  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  660  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  661  bin/hdfs namenode -format
+  662  sbin/start-dfs.sh 
+  663  sbin/start-yarn.sh 
+  664  bin/hdfs dfs -mkdir wikipedia
+  665  bin/hdfs dfs -ls /
+  666  ./bin/hdfs dfs -mkdir /wikipedia
+  667  bin/hdfs dfs -ls /
+  668  ./bin/hdfs dfs -put /home/prof/Documents/Hadoop/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  669  ./bin/hdfs dfs -ls /
+  670  ./bin/hdfs dfs -ls /wikipedia
+  671  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /av/exo3
+  672  ./bin/hadoop jar /home/hduser/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia/
+  673  ./bin/hdfs dfs -ls /
+  674  ./bin/hdfs dfs -rmr av
+  675  ./bin/hdfs dfs -rmr /av
+  676  ./bin/hdfs dfs -ls /
+  677  ./bin/hdfs dfs -ls /test-wikipedia
+  678  ./bin/hdfs dfs -cat /test-wikipedia/part-r-00000
+  679  ./bin/hdfs dfs -ls /test-wikipedia
+  680  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av/exo2
+  681  ./bin/hdfs dfs -ls /
+  682  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av/exo2
+  683  ./bin/hdfs dfs -rmr /av
+  684  ./bin/hdfs dfs -ls /
+  685  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av/exo2
+  686  ./bin/hdfs dfs -rmr /av
+  687  ./bin/hadoop job -lis
+  688  ./bin/hadoop job -list
+  689  ./bin/hadoop job -kill
+  690  ./bin/hadoop job -kill application_1457284892432_0004
+  691  ./bin/hadoop job -status application_1457284892432_0004
+  692  ./bin/hadoop job -help
+  693  ./bin/mapred job -help
+  694  ./bin/mapred job -kill application_1457284892432_0004
+  695  ./bin/mapred job -liqt
+  696  ./bin/mapred job -list
+  697  ./bin/mapred job -kill application_1457284892432_0004
+  698  ./bin/mapred job -list
+  699  ./bin/mapred job -list -help
+  700  ./bin/mapred job -list -a
+  701  ./bin/mapred job -list [all]
+  702  ./bin/mapred job -lista
+  703  ./bin/mapred job -kill-task application_1457284892432_0004
+  704  ./bin/hdfs dfs -ls /
+  705  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av
+  706  ./sbin/stop-all.sh 
+  707  ./sbin/start-dfs.sh 
+  708  ./sbin/start-yarn.sh 
+  709  ./bin/hdfs dfs -ls /
+  710  ./bin/hdfs dfs -ls /av
+  711  ./bin/hdfs dfs -rmr /av
+  712  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av
+  713  ./bin/hdfs dfs -rmr /av
+  714  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce..WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /av-exo1
+  715  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /av-exo1
+  716  ./bin/hadoop jar /home/hduser/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /av-exo1
+  717  ./bin/hdfs dfs -rmr /av-exo1
+  718  ./bin/hadoop jar /home/hduser/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /av-exo1
+  719  ./bin/hdfs dfs -rmr /av-exo1
+  720  ./bin/hdfs dfs -ls /
+  721  ./bin/hdfs dfs -ls /test-wikipedia
+  722  ./bin/hadoop jar /home/hduser/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /av/
+  723  ./bin/hdfs dfs -ls /
+  724  ./bin/hdfs dfs -rmr /av
+  725  ./bin/hadoop jar /home/hduser/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wikipedia2/
+  726  ./bin/hdfs dfs -rmr /test-wikipedia2
+  727  ./bin/hdfs dfs -ls /
+  728  ./bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test/
+  729  ./bin/hdfs dfs -ls /
+  730  ./bin/hdfs dfs -rmr /test
+  731  ./bin/hdfs dfs -ls /wikipedia/
+  732  ./bin/hdfs dfs -lsl /wikipedia/
+  733  ./bin/hdfs dfs -ls -l /wikipedia/
+  734  ./bin/hdfs dfs -ls -help
+  735  ls ~
+  736  ls ~/wikipedia/
+  737  jps
+  738  cat job_job_1457289134693_0006_conf.xml
+  739  ./bin/hdfs dfs -ls /temp
+  740  ./bin/hdfs dfs -ls /tmp
+  741  ./bin/hdfs dfs -ls /tmp/hadoop-yarn
+  742  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging
+  743  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging/hduser
+  744  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging/hduser/.staging
+  745  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging/history
+  746  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging/history/done_intermediate
+  747  ./bin/hdfs dfs -ls /tmp/hadoop-yarn/staging/history/done_intermediate/hduser
+  748  ./bin/hdfs dfs -cat /tmp/hadoop-yarn/staging/history/done_intermediate/hduser/job_1457289134693_0006_conf.xml
+  749  ./bin/hdfs dfs -rmr /tmp/*
+  750  ./bin/hdfs dfs -ls /tmp
+  751  ./bin/hdfs dfs -ls /
+  752  ./sbin/stop-dfs.sh 
+  753  ./sbin/stop-yarn.sh 
+  754  ./sbin/start-dfs.sh 
+  755  ./sbin/start-yarn.sh 
+  756  ./bin/hadoop jar /home/hduser/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test/
+  757  ./bin/hdfs dfs -rmr /test
+  758  ./sbin/stop-dfs.sh 
+  759  ./sbin/stop-yarn.sh 
+  760  exit
+  761  cd /usr/local/hadoop
+  762  ./sbin/start-dfs.sh 
+  763  ./sbin/start-yarn.sh 
+  764  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki/
+  765  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  766  ./bin/hdfs dfs -ls /
+  767  ./bin/hdfs dfs -rmr /test-wiki
+  768  ./bin/hdfs dfs -ls /
+  769  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki/
+  770  cat /etc/hosts
+  771  cd /usr/local/hadoop
+  772  ./bin/hdfs dfs -ls /
+  773  exit
+  774  /usr/local/hadoop
+  775  ls /usr/local/hadoop
+  776  cd /usr/local/hadoop
+  777  ./bin/hdfs dfs -ls /
+  778  ./sbin/start-dfs.sh 
+  779  ./sbin/start-yarn.sh 
+  780  jps
+  781  ./bin/hdfs dfs -ls /
+  782  ./bin/hdfs dfs -rmr /test-wiki
+  783  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki/
+  784  cd lib/
+  785  ls
+  786  cp native/* .
+  787  cd ..
+  788  sudo vi etc/hadoop/core-site.xml 
+  789  sudo vi etc/hadoop/hdfs-site.xml 
+  790  sudo vi etc/hadoop/yarn-site.xml 
+  791  sudo vi ~/.bashrc 
+  792  ./sbin/stop-all.sh 
+  793  ./bin/hdfs dfs -rmr /test-wiki
+  794  ./sbin/start-dfs.sh 
+  795  ./sbin/start-yarn.sh 
+  796  ./bin/hdfs dfs -rmr /test-wiki
+  797  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki/
+  798  ./bin/hdfs dfs -ls /
+  799  ./bin/hdfs dfs -rmr /test-wiki
+  800  ./bin/hdfs dfs -ls /
+  801  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  802  ./bin/hdfs dfs -ls /
+  803  ./bin/hdfs dfs -ls /test-wiki
+  804  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  805  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  806  ./bin/hdfs dfs -rmr /test-wiki2
+  807  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  808  ./bin/hdfs dfs -rmr /test-wiki2
+  809  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  810  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  811  ls ~/
+  812  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki3
+  813  java -version
+  814  ./bin/hdfs dfs -rmr /test-wiki2
+  815  ./bin/hdfs dfs -rmr /test-wiki3
+  816  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  817  sudo vi ~/.bashrc 
+  818  exit
+  819  cd /usr/local/hadoop
+  820  ./sbin/stop-all.sh 
+  821  exit
+  822  cd /usr/local/hadoop
+  823  scp prof@lnv1509w031:~/Aiache/workspace/ensg/target/ensg-av-1.0.0.jar ~/
+  824  ls ~/
+  825  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  826  ./bin/hdfs dfs -rmr /test-wiki2
+  827  ls
+  828  ~prof
+  829  ls ~prof
+  830  jps
+  831  sudo rm -rf /usr/local/hadoop_tmp/
+  832  sudo mkdir -p /usr/local/hadoop_tmp/
+  833  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  834  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  835  cp ~prof/pour-tous-slaves-hduser.sh .
+  836  sudo cp ~prof/pour-tous-slaves-hduser.sh .
+  837  ls
+  838  sudo chown hduser:hduser pour-tous-slaves-hduser.sh 
+  839  sudo chown hduser pour-tous-slaves-hduser.sh 
+  840  vi pour-tous-slaves-hduser.sh 
+  841  ./pour-tous-slaves-hduser.sh "sudo rm -rf /usr/local/hadoop_tmp/hdfs/"
+  842  jps
+  843  ssh hduser@HadoopSlave1
+  844  ssh hduser@HadoopSlave2
+  845  ssh hduser@HadoopSlave3
+  846  ssh hduser@HadoopSlave4
+  847  ssh hduser@HadoopSlave5
+  848  ssh hduser@HadoopSlave6
+  849  ssh hduser@HadoopSlave7
+  850  ssh hduser@HadoopSlave8
+  851  ssh hduser@HadoopSlave9
+  852  ssh hduser@HadoopSlave10
+  853  hdfs namenode -format
+  854  cd /usr/local/hadoop
+  855  ./sbin/start-dfs.sh 
+  856  ./sbin/start-yarn.sh 
+  857  jps
+  858  ssh hduser@HadoopSlave6
+  859  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  860  ls ~/
+  861  ls ~prof/Documents/
+  862  cat ~prof/Documents/commandes_hdfs 
+  863  ./bin/hdfs dfs -put /home/prof/Documents/Hadoop/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  864  ./bin/hdfs dfs -mkdir /wikipedia
+  865  ./bin/hdfs dfs -put /home/prof/Documents/Hadoop/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  866  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  867  ./bin/hdfs dfs -ls /
+  868  ./bin/hdfs dfs rm -r /test-wiki
+  869  ./bin/hdfs dfs -ls /
+  870  ./bin/hdfs dfs -rmr /test-wiki
+  871  ./bin/hdfs dfs -ls /
+  872  ls ~
+  873  rm ~/ensg-1.0.0.jar 
+  874  scp lnv1509w038:~prof/BigData/ensg/ensg-1.0.0.jar ~/
+  875  scp lnv1509w038:~prof/BigData/ensg/target/ensg-1.0.0.jar ~/
+  876  ls ~
+  877  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  878  vi etc/hadoop/core-site.xml 
+  879  vi etc/hadoop/hdfs-site.xml 
+  880  ls
+  881  cd ..
+  882  ls
+  883  cd hadoop_tmp/
+  884  ls
+  885  cd hdfs/
+  886  ls
+  887  cd namenode/
+  888  ls
+  889  cd ..
+  890  rm -r namenode/
+  891  cd ../..
+  892  cd hadoop
+  893  ./bin/hdfs dfs -rmr /test-wiki
+  894  ./bin/hdfs dfs -ls /
+  895  sudo ./bin/hdfs dfs -rmr /test-wiki
+  896  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  897  ./sbin/stop-all.sh 
+  898  sudo rm -rf /usr/local/hadoop_tmp/
+  899  sudo mkdir -p /usr/local/hadoop_tmp/
+  900  sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+  901  sudo chown hduser:hadoop -R /usr/local/hadoop_tmp/ 
+  902  ./bin/hdfs namenode -format
+  903  ./sbin/start-dfs.sh 
+  904  ./sbin/start-yarn.sh 
+  905  jps
+  906  ./sbin/stop-all.sh 
+  907  exit
+  908  ssh hduser@HadoopSlave1
+  909  ssh hduser@HadoopSlave2
+  910  ssh hduser@HadoopSlave3
+  911  ssh hduser@HadoopSlave4
+  912  ssh hduser@HadoopSlave5
+  913  ssh hduser@HadoopSlave6
+  914  ssh hduser@HadoopSlave7
+  915  ssh hduser@HadoopSlave8
+  916  ssh hduser@HadoopSlave9
+  917  ssh hduser@HadoopSlave10
+  918  exit
+  919  cd /usr/local/hadoop/logs/
+  920  ls -lt
+  921  cat yarn-hduser-resourcemanager-lnv1509w029U.log | less
+  922  cat yarn-hduser-secondarynamenode-lnv1509w029U.log | less
+  923  cat hadoop-hduser-secondarynamenode-lnv1509w029U.log | less
+  924  cd ../../
+  925  ls
+  926  cat hadoop_tmp/hdfs/namenode/in_use.lock 
+  927  ssh hduser@lnv1509w031
+  928  ls
+  929  cat /var/log/
+  930  cat /usr/local/hadoop/logs/
+  931  cd /usr/local/hadoop/logs/userlogs/
+  932  ls -l
+  933  ls -l ..
+  934  man ls
+  935  ls -lt
+  936  ls -lt ..
+  937  cat ../yarn-hduser-resourcemanager-lnv1509w029U.log | less
+  938  cat ../hadoop-hduser-secondarynamenode-lnv1509w029U.log | less
+  939  cat ../hadoop-hduser-namenode-lnv1509w029U.log | less
+  940  cd ..
+  941  ls -1 *.log
+  942  for file in $(ls -1 *.log); do echo -e "\n\n\n\n" >> $file; done
+  943  tail yarn-hduser-resourcemanager-lnv1509w029U.log 
+  944  ssh prof@lnv1509w038
+  945  cat ../etc/hadoop/slaves 
+  946  ls -lt
+  947  cat yarn-hduser-resourcemanager-lnv1509w029U.log 
+  948  cat yarn-hduser-resourcemanager-lnv1509w029U.log |less
+  949  ls -lt
+  950  cat hadoop-hduser-balancer-lnv1509w029U.log  |less
+  951  cat hadoop-hduser-datanode-lnv1509w029U.log  |less
+  952  cat hadoop-hduser-secondarynamenode-lnv1509w029U.out | less
+  953  cat hadoop-hduser-secondarynamenode-lnv1509w029U.log | less
+  954  cat hadoop-hduser-namenode-lnv1509w029U.log | less
+  955  emacs --nw  hadoop-hduser-namenode-lnv1509w029U.log
+  956  sudo apt-cache policy emacs24
+  957  sudo apt-cache policy emacs23
+  958  sudo apt-get install emacs24
+  959  emacs --nw  hadoop-hduser-namenode-lnv1509w029U.log
+  960  emacs  hadoop-hduser-namenode-lnv1509w029U.log
+  961  cd
+  962  cd /usr/local/bin/
+  963  cd ../hadoop
+  964  ./sbin/start-dfs.sh 
+  965  ./sbin/start-yarn.sh 
+  966  cd /usr/local/hadoop
+  967  jps
+  968  ls ~
+  969  ls ~prof
+  970  ls ~prof/Documents/
+  971  cat ~prof/Documents/commandes_hdfs 
+  972  ./bin/hdfs dfs -mkdir /wikipedia
+  973  ./bin/hdfs dfs -put /home/prof/Documents/Hadoop/enwiki-20160113-pages-articles.xml  /wikipedia/enwiki-20160113-pages-articles.xml
+  974  ls ~
+  975  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki
+  976  vi ~/logs/log1_succeded
+  977  cd /usr/local/hadoop
+  978  ls ~
+  979  scp prof@lnv1509w038:/home/prof/BigData/ensg/target/ensg-av-1.0.0.jar ~/
+  980  scp prof@lnv1509w031:/home/prof/Aiache/workspace/ensg/target/ensg-av-1.0.0.jar ~/
+  981  ls ~
+  982  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  983  ./bin/hdfs dfs -rmr /test-wiki2
+  984  ls ~
+  985  rm ~/ensg-av-1.0.0.jar 
+  986  scp prof@lnv1509w038:/home/prof/BigData/ensg-av/target/ensg-av-1.0.0.jar ~/
+  987  lq ~
+  988  ls ~
+  989  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  990  ls ~prof/Téléchargements/
+  991  scp prof@rks1306w317:~prof/Téléchargements/hadoop-native-64-2.6.0/* ./lib/native/
+  992  ls lib/native/
+  993  ./bin/hdfs dfs -rmr /test-wiki2
+  994  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki2
+  995  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki3
+  996  jps
+  997  df -h
+  998  sudo df -h
+  999  sudo vi ~/.bashrc 
+ 1000  ./sbin/stop-all.sh 
+ 1001  sudo vi ~/.bashrc 
+ 1002  ./sbin/start-dfs.sh 
+ 1003  ./sbin/start-yarn.sh 
+ 1004  ./sbin/stop-all.sh 
+ 1005  ./sbin/start-dfs.sh 
+ 1006  ./sbin/start-yarn.sh 
+ 1007  bin/hdfs fsck
+ 1008  bin/hdfs fsck -files
+ 1009  cd /usr/local/hadoop
+ 1010  sbin/start-all.sh 
+ 1011  jps
+ 1012  bin/hdfs dfs -ls /
+ 1013  bin/hdfs dfs -rmr /test-wiki-2
+ 1014  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-2
+ 1015  bin/hdfs dfs -rmr /test-wiki-2
+ 1016  cat /etc/h
+ 1017  cat /etc/host
+ 1018  cat /etc/hostname 
+ 1019  cat /etc/host.conf 
+ 1020  cat /etc/hosts
+ 1021  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1022  cat etc/hadoop/hadoop-env.sh 
+ 1023  echo $NO_PROXY
+ 1024  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1025  bin/hdfs dfs -rmr /test-wiki-2 /test-wiki-3
+ 1026  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1027  cd /usr/local/hadoop
+ 1028  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1029  bin/hdfs dfs -rmr /test-wiki-2 /test-wiki-3
+ 1030  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1031  sbin/stop-all.sh
+ 1032  sbin/start-dfs.sh
+ 1033  sbin/start-yarn.sh 
+ 1034  bin/hdfs dfs -rmr /test-wiki-2 /test-wiki-3
+ 1035  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1036  bin/hdfs dfs -rmr /test-wiki-3
+ 1037  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1038  sbin/start-dfs.sh
+ 1039  sbin/stop-all.sh
+ 1040  sbin/start-dfs.sh
+ 1041  sbin/start-yarn.sh 
+ 1042  bin/hdfs dfs -rmr /test-wiki-3
+ 1043  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-2
+ 1044  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiNumberOfAboutHadoopArticles /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1045  bin/hdfs dfs -ls /test-wiki-3
+ 1046  bin/hdfs dfs -cat /test-wiki-3/part-r-00000
+ 1047  ls ~
+ 1048  scp hduser@HadoopSlave7:~prof/Aiache/workspace/ensg/ensg-av-1.0.0.jar ~/
+ 1049  scp hduser@HadoopSlave6:~akraus/Aiache/workspace/ensg/target/ensg-av-1.0.0.jar ~/
+ 1050  ls ~
+ 1051  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumberHadoop /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-4
+ 1052  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-4
+ 1053  bin/hdfs dfs -cat /test-wiki-4
+ 1054  bin/hdfs dfs -ls /test-wiki-4
+ 1055  rm ~/ensg-av-1.0.0.jar 
+ 1056  scp hduser@HadoopMaster7:~prof/Aiache/workspace/ensg/target/ensg-av-1.0.0.jat ~/
+ 1057  scp hduser@HadoopSlave7:~prof/Aiache/workspace/ensg/target/ensg-av-1.0.0.jat ~/
+ 1058  scp hduser@HadoopSlave7:~prof/Aiache/workspace/ensg/target/ensg-av-1.0.0.jar ~/
+ 1059  bin/hdfs dfs -ls /
+ 1060  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiNumHadoop /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-5
+ 1061  bin/hdfs dfs -ls /test-wiki-5
+ 1062  bin/hdfs dfs -cat /test-wiki-5/part-r-00000
+ 1063  clear
+ 1064  ssh hduser@HadoopSlave1
+ 1065  ssh hduser@HadoopSlave2
+ 1066  ssh hduser@HadoopSlave3
+ 1067  vi /etc/sysctl.conf 
+ 1068  ssh hduser@HadoopSlave3
+ 1069  cat pour-tous-slaves.sh 
+ 1070  ./pour-tous-slaves.sh "echo $NO_PROXY"
+ 1071  ssh hduser@HadoopSlave3
+ 1072  ssh hduser@HadoopSlave2
+ 1073  ssh hduser@HadoopSlave3
+ 1074  cat ./pour-tous-slaves.sh 
+ 1075  cp pour-tous-slaves.sh pour-tous-slaves-scp.sh
+ 1076  vi pour-tous-slaves-scp.sh 
+ 1077  ./pour-tous-slaves-scp.sh ~/.ssh/known_hosts ~/.ssh/known_hosts
+ 1078  cat /etc/resolv.conf 
+ 1079  cat /etc/hosts
+ 1080  cat /etc/hostname 
+ 1081  ./pour-tous-slaves.sh "cat /etc/hostname"
+ 1082  cat /etc/ssh/ssh_config 
+ 1083  ./pour-tous-slaves-scp.sh /etc/ssh/ssh_config /tmp/
+ 1084  man diff
+ 1085  ./pour-tous-slaves.sh "diff -s /etc/ssh/ssh_config /tmp/ssh_config"
+ 1086  ./pour-tous-slaves.sh "rm /tmp/ssh_config"
+ 1087  cat /etc/profile
+ 1088  cat /etc/bash.bashrc 
+ 1089  cat .profile 
+ 1090  cat .bashrc 
+ 1091  ./pour-tous-slaves-scp.sh ~/.bashrc /tmp/
+ 1092  ./pour-tous-slaves.sh "diff -s .bashrc /tmp/.bashrc"
+ 1093  ./pour-tous-slaves-scp.sh ~/.bashrc ~/.bashrc
+ 1094  ls /etc/iproute2/rt_tables 
+ 1095  ssh hduser@HadoopSlave2 "hostname"
+ 1096  ssh hduser@HadoopSlave2 "cat /etc/hostname"
+ 1097  iptable
+ 1098  iptables
+ 1099  sudo iptables
+ 1100  sudo iptables --help
+ 1101  sudo iptables --list
+ 1102  cat /etc/hosts
+ 1103  man head
+ 1104  ./pour-tous-slaves.sh "head -n 1 /etc/hosts"
+ 1105  vi pour-tous-slaves-hduser.sh 
+ 1106  cp pour-tous-slaves.sh tmp.sh
+ 1107  vi tmp.sh 
+ 1108  ./tmp.sh 
+ 1109  ./pour-tous-slaves.sh "head -n 1 /etc/hosts"
+ 1110  /usr/local/hadoop/sbin/stop-all.sh 
+ 1111  ./pour-tous-slaves.sh "sudo reboot"
+ 1112  /usr/local/hadoop/sbin/start-dfs.sh 
+ 1113  /usr/local/hadoop/sbin/start-yarn.sh 
+ 1114  ./bin/hdfs dfs -rmr /test-wiki2
+ 1115  cd /usr/local/hadoop
+ 1116  ./bin/hdfs dfs -rmr /test-wiki3
+ 1117  ./bin/hdfs dfs -rmr /test-wiki2
+ 1118  cat /etc/host
+ 1119  cat /etc/hosts
+ 1120  ./pour-tous-slaves.sh "head -n 1 /etc/hosts"
+ 1121  cd
+ 1122  ./pour-tous-slaves.sh "head -n 1 /etc/hosts"
+ 1123  ./pour-tous-slaves.sh "cat /etc/hosts"
+ 1124  vi tmp.sh 
+ 1125  ./tmp.sh 
+ 1126  ./pour-tous-slaves.sh 
+ 1127  vi tmp.sh 
+ 1128  ./tmp.sh 
+ 1129  ./pour-tous-slaves.sh "head -n 2 /etc/hosts"
+ 1130  vi tmp.sh 
+ 1131  ./tmp.sh 
+ 1132  ./pour-tous-slaves.sh "sudo reboot"
+ 1133  vi tmp.sh 
+ 1134  ./tmp.sh 
+ 1135  ./pour-tous-slaves.sh "head -n 2 /etc/hosts"
+ 1136  ssh hduser@HadoopSlave2
+ 1137  ./pour-tous-slaves.sh "sudo reboot"
+ 1138  cd /usr/local/hadoop
+ 1139  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-5
+ 1140  bin/hdfs dfs -rmr /test-wiki-2 /test-wiki-5
+ 1141  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-3
+ 1142  hadoop jar ~/ensg-av-1.0.0.jar mapreduce.WikiLongestArticle /wikipedia/enwiki-20160113-pages-articles.xml /test-wiki-4
+ 1143  bin/hdfs dfs -ls /test-wiki4
+ 1144  bin/hdfs dfs -ls /test-wiki-4
+ 1145  bin/hdfs dfs -cat /test-wiki-4/part-r-00000
+ 1146  sbin/stop-all.sh 
+ 1147  cd$
+ 1148  cd
+ 1149  ./pour-tous-slaves.sh "sudo poweroff"
+ 1150  locate hadoop
+ 1151  history
+ 1152  cd /usr/local/hadoop
+ 1153  ./bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiFirstTitleLetterDocumentLengthSum /wikipedia/enwiki-20160113-pages-articles.xml /test/
+ 1154  exit
+ 1155  ./bin/hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /test-hadim/
+ 1156  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /test-hadim/
+ 1157  ls
+ 1158  find hadim
+ 1159  ls
+ 1160  whereis /test-hadim/
+ 1161  find /test-hadim/
+ 1162  ls
+ 1163  cd wikipedia/
+ 1164  ls
+ 1165  cd ..
+ 1166  cd scripts/
+ 1167  ls
+ 1168  cd ..
+ 1169  ls -a
+ 1170  cd /usr/local/hadoop
+ 1171  ./bin/hadoop fs -ls /
+ 1172  ./bin/hadoop fs 
+ 1173  ./bin/hadoop fs -ls /test-hadim/_SUCCESS
+ 1174  ./bin/hadoop fs -CAT /test-hadim/_SUCCESS
+ 1175  ./bin/hadoop fs -cat /test-hadim/_SUCCESS
+ 1176  ./bin/hadoop fs -ls /test-hadim
+ 1177  ./bin/hadoop fs -cat /test-hadim/_SUCCES
+ 1178  ./bin/hadoop fs -cat /test-hadim/_SUCCESS
+ 1179  ./bin/hadoop fs -cat /test-hadim/part-r-00001
+ 1180  ./bin/hadoop fs -ls /test-hadim
+ 1181  cd ~
+ 1182  ls
+ 1183  hadoop jar ~/ensg-1.0.0.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /test-hadimt/
+ 1184  cd /usr/local/hadoop
+ 1185  ./bin/hadoop fs -ls /test-hadimt
+ 1186  ./bin/hadoop fs -cat /test-hadimt/part-r-00001
+ 1187  cd ~
+ 1188  hadoop jar ~/ensg-1.0.2.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /test-hatim11/
+ 1189  hadoop jar ~/ensg-1.0.2.jar mapreduce.WikiArticlePlusLong /wikipedia/enwiki-20160113-pages-articles.xml /test-hatim11
+ 1190  cd /usr/local/hadoop
+ 1191  ./bin/hadoop fs -ls /
+ 1192  ./bin/hadoop fs -ls /test-hatim11
+ 1193  ./bin/hadoop fs -head /test-hatim11/part-r-00000
+ 1194  ./bin/hadoop fs -tile /test-hatim11/part-r-00000
+ 1195  ./bin/hadoop fs -tail /test-hatim11/part-r-00000
+ 1196  history
+

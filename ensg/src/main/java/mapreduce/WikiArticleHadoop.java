@@ -33,17 +33,18 @@ import java.util.regex.Matcher;
 
 				String articleXML = value.toString();
 
-				String title = getTitle(articleXML);
-				String document = getDocument(articleXML);
+				//String title = getTitle(articleXML);
+				//String document = getDocument(articleXML);
 
 				StringTokenizer itr = new StringTokenizer(articleXML);
 				while(itr.hasMoreTokens()){
-					if(itr.nextToken().equals("hadoop") || itr.nextToken().equals("Hadoop")){
+					if(articleXML.contains("hadoop") || articleXML.contains("Hadoop")){
+						context.write(new Text("test"),new IntWritable(1));
 						break;
 					}
 		
 				}
-				context.write(new Text("test"),new IntWritable(1));
+				
 			}
 
 			private static String getDocument(String xml) {
