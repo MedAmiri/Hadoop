@@ -66,41 +66,42 @@ public class  WikiContributeur {
 			Matcher m1 = IP.matcher(xml);
 			Matcher m2 = USERNAME.matcher(xml);
 			
-			if(m.find() && m1.find()){
-				m1.group(1);
+			if(m.matches() && m1.find()){
+				return m1.group(1);
 								
-			}else if(m.find() && m2.find()){
-				m2.group(1);
+			}else if(m.matches() && m2.find()){
+				return m2.group(1);
 			}
 						
-			return null;	
+			return "";	
 		}
 	}
 
 	public static class DocumentLengthSumReducer extends
 			Reducer<Text, IntWritable, Text, LongWritable> {
-
-		public void reduce(Text key, Iterable<Text> values,
+		int nbmax =0 ;
+		int nb = 0;
+		Text contributeur = new Text();
+		public void reduce(Text key, Iterable<IntWritable> values,
 				Context context) throws IOException, InterruptedException {
-
-			long nbArticle = 0;
-			long nbmax = 0;
-			Text contributor = new Text();
-			for (Text valeur : values) {
-				//contributor = valeur;
-				for(Text val : values){
-					if(valeur ==  val){
-						nbArticle += 1;
-					}
-				}
-				if(nbmax < nbArticle){
-					nbmax = nbArticle;
-					contributor = valeur;
-				}
-			 
+			
+			for(IntWritable val: values){
+				nb += 1;
 			}
-			context.write(contributor, new LongWritable(nbmax));
+			contributeur = key;
+			context.write(key, new LongWritable(nb));
 		}
+		
+		public void cleanup(Context context) throws IOException,
+		    InterruptedException {
+		    //Text contributor = context.getCurrentKey();
+		    if(nbmax < nb){
+		    	nbmax = nb;
+		    	context.write(contributeur, new LongWritable(nbmax));
+		    }
+		   
+		}
+		
 	}
 
 	public static void main(String[] args) throws Exception {
