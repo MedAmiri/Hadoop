@@ -62,16 +62,16 @@ package mapreduce;
 					Context context) throws IOException, InterruptedException {
 
 				long maxLength = 0;
-				Text titreActicleMax = new Text("");
+				String titreActicleMax = new String();
 				for (Text document : values) {
 					String[] chaine = document.toString().split("\\|\\|\\|");
 					int maxtest = Integer.parseInt(chaine[1]);
 					if(maxLength < maxtest){
 						maxLength = maxtest;
-						titreActicleMax.set(chaine[0]);
+						titreActicleMax = chaine[0].toString();
 					}
 				}
-				context.write(titreActicleMax , new LongWritable(maxLength));
+				context.write(new Text(titreActicleMax) , new LongWritable(maxLength));
 			}
 		}
 
@@ -98,7 +98,7 @@ package mapreduce;
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(LongWritable.class);
 			job.setReducerClass(DocumentLengthSumReducer.class);
-			job.setNumReduceTasks(12);
+			job.setNumReduceTasks(1);
 
 			System.exit(job.waitForCompletion(true) ? 0 : 1);
 		}
